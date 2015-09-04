@@ -1,0 +1,32 @@
+{
+  "name": "onetree",
+  "version": "0.0.1",
+  "homepage": "https://github.com/xuejp/onetree",
+  "authors": [
+    "xuejp <xuejp@outlook.com>"
+  ],
+  "description": "Automatic generating tree",
+  "main": "index.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "tree"
+  ],
+  "license": "APL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "external",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "requirejs": "~2.1.20"
+  },
+  "devDependencies": {
+    "qunit": "~1.19.0"
+  }
+}
