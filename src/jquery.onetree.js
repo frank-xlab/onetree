@@ -14,45 +14,40 @@
 	}
 }(function ($) {
 	'use strict';
-	$.fn.menutree = function (setting) {
+	$.fn.onetree = function (options) {
 		var element = this,
-			cSetting = {},
-			dataList = [],
-			defaultSetting = {
-				data: [],
-				wrapOutTemplate: '<ul></ul>',
-				wrapInnerTemplate: '<li></li>',
-				contentTemplate: '',
-				bindEvent: null
-			};
-		$.extend(true, cSetting, defaultSetting, setting);
+			dataList = [];
+		options = $.extend(true, {}, $.onetree.options, options);
 
-		dataList = generateLinkedList(cSetting.data);
+		dataList = $.onetree.generateLinkedList(options.data);
 
 		$(element)
-			.append(generateHtml(dataList),
-				cSetting.wrapInnerTemplate,
-				cSetting.wrapOutTemplate,
-				cSetting.contentTemplate,
-				cSetting.bindEvent);
+			.append($.onetree.generateHtml(dataList),
+				options.wrapInnerTemplate,
+				options.wrapOutTemplate,
+				options.contentTemplate,
+				options.bindEvent);
 
-		// convert to a dictionary
+		return $.fn.menutree;
+	};
+
+	// Static method.
+	$.onetree = function (options) {
+		// Override default options with passed-in options.
+		options = $.extend({}, $.onetree.options, options);
+		// Return something awesome.
+		return 'awesome' + options.punctuation;
+	};
+
+	// generate linked data
+	$.onetree.generateLinkedList = function (data) {
+
+		// convert to dictionary
 		function convertToDictionary(data) {
 			var result = [],
 				i;
 			for (i = 0; i < data.length; i++) {
 				result[data[i].ID.toString()] = data[i];
-			}
-			return result;
-		}
-
-		// generate linked list
-		function generateLinkedList(data) {
-			var result = [],
-				i,
-				rootNode = findRootNodes(data);
-			for (i = 0; i < rootNode.length; i++) {
-				result.push(generateSubTree(rootNode[i], data));
 			}
 			return result;
 		}
@@ -85,16 +80,17 @@
 			};
 		}
 
-		// generate html for menu tree
-		function generateHtml(linkedList, wrapInnerTemplate, wrapOutTemplate, contentTemplate, bindEvent) {
-			var $html,
-				i;
-			$html = $(wrapOutTemplate);
-			for (i = 0; i < linkedList.length; i++) {
-				$html.append(generateNodeHtml(linkedList[i]), wrapInnerTemplate, wrapOutTemplate, contentTemplate, bindEvent);
-			}
-			return $html;
+		var result = [],
+			i,
+			rootNode = findRootNodes(data);
+		for (i = 0; i < rootNode.length; i++) {
+			result.push(generateSubTree(rootNode[i], data));
 		}
+		return result;
+	};
+
+	// generate html for menu tree
+	$.onetree.generateHtml = function (linkedList, wrapInnerTemplate, wrapOutTemplate, contentTemplate, bindEvent) {
 
 		// generate html for node
 		function generateNodeHtml(node, wrapInnerTemplate, wrapOutTemplate, contentTemplate, bindEvent) {
@@ -129,26 +125,22 @@
 			}
 			return $node;
 		}
-		return $.fn.menutree;
-	};
-	// Static method.
-	$.onetree = function (options) {
-		// Override default options with passed-in options.
-		options = $.extend({}, $.onetree.options, options);
-		// Return something awesome.
-		return 'awesome' + options.punctuation;
+
+		var $html,
+			i;
+		$html = $(wrapOutTemplate);
+		for (i = 0; i < linkedList.length; i++) {
+			$html.append(generateNodeHtml(linkedList[i]), wrapInnerTemplate, wrapOutTemplate, contentTemplate, bindEvent);
+		}
+		return $html;
 	};
 
 	// Static method default options.
 	$.onetree.options = {
-		punctuation: '.'
-	};
-
-	// Custom selector.
-	$.expr[':'].onetree = function (elem) {
-		// Is this element awesome?
-		return $(elem)
-			.text()
-			.indexOf('awesome') !== -1;
+		data: [],
+		wrapOutTemplate: '<ul></ul>',
+		wrapInnerTemplate: '<li></li>',
+		contentTemplate: '',
+		bindEvent: null
 	};
 }));
