@@ -17,17 +17,18 @@
 
 	$.fn.onetree = function (options) {
 		var element = this,
+			_instance = new $.onetree(),
 			dataList = [];
 		options = $.extend(true, {}, $.onetree.options, options);
 
-		dataList = $.onetree.generateLinkedList(options.data);
-
+		dataList = _instance.generateLinkedList(options.data);
+		
 		$(element)
-			.append($.onetree.generateHtml(dataList),
+			.append(_instance.generateHtml(dataList,
 				options.wrapInnerTemplate,
 				options.wrapOutTemplate,
 				options.contentTemplate,
-				options.bindEvent);
+				options.bindEvent));
 
 		return $.fn.menutree;
 	};
@@ -109,7 +110,6 @@
 					strHtml = strHtml.replace(new RegExp('\\{' + key + '\\}', 'gi'), node[key]);
 				}
 			}
-
 			$node = $(strHtml);
 			if (bindEvent !== null) {
 				bindEvent($node, node);
