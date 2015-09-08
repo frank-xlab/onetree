@@ -122,7 +122,7 @@
 			},
 			traverseParent: function (node, callback) {
 				var parentNode = node.parent()
-					.parent($.onetree.options.wrapInnerTag);
+					.parent(this.options.wrapInnerTag);
 				if (parentNode.html() === undefined) {
 					return;
 				}
@@ -131,7 +131,7 @@
 			},
 			traverseChildren: function (node, callback) {
 				var childNodes = $(node)
-					.children($.onetree.options.wrapOutTag)
+					.children(this.options.wrapOutTag)
 					.children(),
 					i;
 				if (childNodes.html() === undefined) {
@@ -145,7 +145,7 @@
 			traverseBrother: function (node, callback) {
 				var brotherNodes = $(node)
 					.parent()
-					.children($.onetree.options.wrapInnerTag),
+					.children(this.options.wrapInnerTag),
 					i;
 				for (i = 0; i < brotherNodes.length; i++) {
 					if (brotherNodes[i] === node) {
