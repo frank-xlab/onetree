@@ -22,11 +22,12 @@
 			options = $.extend( true, {}, $.onetree.options, options );
 			dataList = $.onetree.generateLinkedList( options.data );
 			$( element )
+				.empty()
 				.append( $.onetree.generateHtml( dataList,
 					options.wrapOutTag,
 					options.wrapInnerTag,
 					options.contentTemplate,
-					options.bindEvent ) );
+					options.callback ) );
 
 			return $.fn.menutree;
 		}
@@ -39,7 +40,7 @@
 				wrapOutTag: 'ul',
 				wrapInnerTag: 'li',
 				contentTemplate: '',
-				bindEvent: null
+				callback: null
 			},
 			generateLinkedList: function ( data ) {
 				var result = [],
@@ -82,28 +83,28 @@
 					subnode: result
 				};
 			},
-			generateHtml: function ( linkedList, wrapOutTag, wrapInnerTag, contentTemplate, bindEvent ) {
+			generateHtml: function ( linkedList, wrapOutTag, wrapInnerTag, contentTemplate, callback ) {
 				var $html,
 					i;
 				$html = $( document.createElement( wrapOutTag ) );
 				for ( i = 0; i < linkedList.length; i++ ) {
-					$html.append( this._generateNodeHtml( linkedList[ i ], wrapOutTag, wrapInnerTag, contentTemplate, bindEvent ) );
+					$html.append( this._generateNodeHtml( linkedList[ i ], wrapOutTag, wrapInnerTag, contentTemplate, callback ) );
 				}
 				return $html;
 			},
-			_generateNodeHtml: function ( node, wrapOutTag, wrapInnerTag, contentTemplate, bindEvent ) {
+			_generateNodeHtml: function ( node, wrapOutTag, wrapInnerTag, contentTemplate, callback ) {
 				var $nodeHtml,
 					$nodelistHtml,
 					i;
 				$nodeHtml = $( document.createElement( wrapInnerTag ) )
-					.append( this._generateContentHtml( node.node, contentTemplate, bindEvent ) );
-				if ( bindEvent !== null ) {
-					bindEvent( $nodeHtml, node.node );
+					.append( this._generateContentHtml( node.node, contentTemplate, callback ) );
+				if ( callback !== null ) {
+					callback( $nodeHtml, node.node );
 				}
 				if ( node.subnode.length > 0 ) {
 					$nodelistHtml = $( document.createElement( wrapOutTag ) );
 					for ( i = 0; i < node.subnode.length; i++ ) {
-						$nodelistHtml.append( this._generateNodeHtml( node.subnode[ i ], wrapOutTag, wrapInnerTag, contentTemplate, bindEvent ) );
+						$nodelistHtml.append( this._generateNodeHtml( node.subnode[ i ], wrapOutTag, wrapInnerTag, contentTemplate, callback ) );
 					}
 					$nodeHtml.append( $nodelistHtml );
 				}
@@ -155,5 +156,4 @@
 			}
 		}
 	} );
-
 } ) );

@@ -56,7 +56,7 @@
             PID: 0,
             Value: {}
           }],
-          bindEvent: function(nodes, node) {
+          callback: function(nodes, node) {
             $(nodes).click(function(){
               $.onetree.traverseParent($(nodes), function() {
                 $(this).children().first().prop('checked', false);
