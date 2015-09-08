@@ -6,6 +6,7 @@
     <title>Onetree Test Suite</title>
     <script src="../external/requirejs/require.js"></script>
   </head>
+
   <body>
     <div id="qunit"></div>
     <div id="qunit-fixture">
@@ -54,9 +55,19 @@
             ID: 5,
             PID: 0,
             Value: {}
-          }]
+          }],
+          bindEvent: function(nodes, node) {
+            $(nodes).click(function(){
+              $.onetree.traverseParent($(nodes), function() {
+                $(this).children().first().prop('checked', false);
+              });
+            });
+          },
+          contentTemplate: '<span>ssssss</span>'
         });
       });
+
     </script>
   </body>
+
 </html>
