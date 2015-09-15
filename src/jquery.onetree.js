@@ -21,6 +21,12 @@
 				dataList = [];
 			options = $.extend(true, {}, $.onetree.options, options);
 			dataList = $.onetree.generateLinkedList(options.data);
+			if (options.root.append) {
+				dataList = [{
+					node: options.root.node,
+					subnode: dataList
+				}];
+			}
 			$(element)
 				.empty()
 				.append($.onetree.generateHtml(dataList,
@@ -37,6 +43,13 @@
 		onetree: {
 			options: {
 				data: [],
+				root: {
+					append: false,
+					node: {
+						ID: 0,
+						PID: -1
+					}
+				},
 				wrapOutTag: 'ul',
 				wrapInnerTag: 'li',
 				contentTemplate: '',

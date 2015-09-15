@@ -57,13 +57,16 @@
             Value: {}
           }],
           callback: function(nodes, node) {
-            $(nodes).click(function(){
+            $(nodes).click(function() {
               $.onetree.traverseParent($(nodes), function() {
                 $(this).children().first().prop('checked', false);
               });
             });
           },
-          contentTemplate: '<span>ssssss</span>'
+          contentTemplate: '<span>ssssss</span>',
+          root: {
+            append: true
+          }
         });
       });
 
