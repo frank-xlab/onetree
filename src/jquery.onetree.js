@@ -9,6 +9,7 @@
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		define('onetree', ['jquery'], factory);
+		
 	} else {
 		factory(jQuery);
 	}
