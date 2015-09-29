@@ -11,6 +11,7 @@
 		define('onetree', ['jquery'], factory);
 	} else {
 		factory(jQuery);
+		
 	}
 }(function ($) {
 	'use strict';
