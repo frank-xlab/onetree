@@ -27,7 +27,7 @@
 				dataList = [ {
 					node: options.root.node,
 					subnode: dataList
-				} ];
+                } ];
 			}
 			$( element )
 				.empty()
