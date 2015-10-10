@@ -6,42 +6,44 @@
  * Licensed under the APL license.
  */
 
-( function ( factory ) {
-	if ( typeof define === 'function' && define.amd ) {
-		define( 'onetree', [ 'jquery' ], factory );
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		define('onetree', ['jquery'], factory);
 	} else {
-		factory( jQuery );
+		factory(jQuery);
 	}
-}( function ( $ ) {
+}(function ($) {
 	'use strict';
 
-	$.fn.extend( {
-		onetree: function ( options ) {
+	$.fn.extend({
+		onetree: function (options) {
 			var element = this,
 				dataList = [];
-			options = $.extend( true, {}, $.onetree.options, options );
-			dataList = $.onetree.generateLinkedList( options.data, function ( result ) {
-				result.sort( options.sortCallback );
-			} );
-			if ( options.root.append ) {
-				dataList = [ {
+			options = $.extend(true, {}, $.onetree.options, options);
+			dataList = $.onetree.generateLinkedList(options.data, function (result) {
+				if ('function' === typeof options.sortCallback) {
+					result.sort(options.sortCallback);
+				}
+			});
+			if (options.root.append) {
+				dataList = [{
 					node: options.root.node,
 					subnode: dataList
-                } ];
+                }];
 			}
-			$( element )
+			$(element)
 				.empty()
-				.append( $.onetree.generateHtml( dataList,
+				.append($.onetree.generateHtml(dataList,
 					options.wrapOutTag,
 					options.wrapInnerTag,
 					options.contentTemplate,
-					options.callback ) );
+					options.callback));
 
 			return $.fn.menutree;
 		}
-	} );
+	});
 
-	$.extend( {
+	$.extend({
 		onetree: {
 			options: {
 				data: [],
@@ -58,124 +60,124 @@
 				contentTemplate: '',
 				callback: null
 			},
-			generateLinkedList: function ( data, callback ) {
+			generateLinkedList: function (data, callback) {
 				var result = [],
 					i,
-					rootNode = this.findRootNodes( data );
-				for ( i = 0; i < rootNode.length; i++ ) {
-					result.push( this._generateSubTree( rootNode[ i ], data, callback ) );
+					rootNode = this.findRootNodes(data);
+				for (i = 0; i < rootNode.length; i++) {
+					result.push(this._generateSubTree(rootNode[i], data, callback));
 				}
-				if ( 'function' === typeof callback ) {
-					callback( result );
+				if ('function' === typeof callback) {
+					callback(result);
 				}
 				return result;
 			},
-			convertToDictionary: function ( data ) {
+			convertToDictionary: function (data) {
 				var result = [],
 					i;
-				for ( i = 0; i < data.length; i++ ) {
-					result[ data[ i ].ID.toString() ] = data[ i ];
+				for (i = 0; i < data.length; i++) {
+					result[data[i].ID.toString()] = data[i];
 				}
 				return result;
 			},
-			findRootNodes: function ( data ) {
+			findRootNodes: function (data) {
 				var result = [],
 					key,
-					dictionary = this.convertToDictionary( data );
-				for ( key in dictionary ) {
-					if ( dictionary.hasOwnProperty( key ) && dictionary[ dictionary[ key ].PID.toString() ] === undefined ) {
-						result.push( dictionary[ key ] );
+					dictionary = this.convertToDictionary(data);
+				for (key in dictionary) {
+					if (dictionary.hasOwnProperty(key) && dictionary[dictionary[key].PID.toString()] === undefined) {
+						result.push(dictionary[key]);
 					}
 				}
 				return result;
 			},
-			_generateSubTree: function ( fNode, data, callback ) {
+			_generateSubTree: function (fNode, data, callback) {
 				var result = [],
 					i;
-				for ( i = 0; i < data.length; i++ ) {
-					if ( data[ i ].PID === fNode.ID ) {
-						result.push( this._generateSubTree( data[ i ], data ) );
+				for (i = 0; i < data.length; i++) {
+					if (data[i].PID === fNode.ID) {
+						result.push(this._generateSubTree(data[i], data));
 					}
 				}
-				if ( 'function' === typeof callback ) {
-					callback( result );
+				if ('function' === typeof callback) {
+					callback(result);
 				}
 				return {
 					node: fNode,
 					subnode: result
 				};
 			},
-			generateHtml: function ( linkedList, wrapOutTag, wrapInnerTag, contentTemplate, callback ) {
+			generateHtml: function (linkedList, wrapOutTag, wrapInnerTag, contentTemplate, callback) {
 				var $html,
 					i;
-				$html = $( document.createElement( wrapOutTag ) );
-				for ( i = 0; i < linkedList.length; i++ ) {
-					$html.append( this._generateNodeHtml( linkedList[ i ], wrapOutTag, wrapInnerTag, contentTemplate, callback ) );
+				$html = $(document.createElement(wrapOutTag));
+				for (i = 0; i < linkedList.length; i++) {
+					$html.append(this._generateNodeHtml(linkedList[i], wrapOutTag, wrapInnerTag, contentTemplate, callback));
 				}
 				return $html;
 			},
-			_generateNodeHtml: function ( node, wrapOutTag, wrapInnerTag, contentTemplate, callback ) {
+			_generateNodeHtml: function (node, wrapOutTag, wrapInnerTag, contentTemplate, callback) {
 				var $nodeHtml,
 					$nodelistHtml,
 					i;
-				$nodeHtml = $( document.createElement( wrapInnerTag ) )
-					.append( this._generateContentHtml( node.node, contentTemplate, callback ) );
-				if ( callback !== null ) {
-					callback( $nodeHtml, node.node );
+				$nodeHtml = $(document.createElement(wrapInnerTag))
+					.append(this._generateContentHtml(node.node, contentTemplate, callback));
+				if (callback !== null) {
+					callback($nodeHtml, node.node);
 				}
-				if ( node.subnode.length > 0 ) {
-					$nodelistHtml = $( document.createElement( wrapOutTag ) );
-					for ( i = 0; i < node.subnode.length; i++ ) {
-						$nodelistHtml.append( this._generateNodeHtml( node.subnode[ i ], wrapOutTag, wrapInnerTag, contentTemplate, callback ) );
+				if (node.subnode.length > 0) {
+					$nodelistHtml = $(document.createElement(wrapOutTag));
+					for (i = 0; i < node.subnode.length; i++) {
+						$nodelistHtml.append(this._generateNodeHtml(node.subnode[i], wrapOutTag, wrapInnerTag, contentTemplate, callback));
 					}
-					$nodeHtml.append( $nodelistHtml );
+					$nodeHtml.append($nodelistHtml);
 				}
 				return $nodeHtml;
 			},
-			_generateContentHtml: function ( node, contentTemplate ) {
+			_generateContentHtml: function (node, contentTemplate) {
 				var strHtml = contentTemplate,
 					key;
-				for ( key in node ) {
-					if ( node.hasOwnProperty( key ) ) {
-						strHtml = strHtml.replace( new RegExp( '\\{' + key + '\\}', 'gi' ), node[ key ] );
+				for (key in node) {
+					if (node.hasOwnProperty(key)) {
+						strHtml = strHtml.replace(new RegExp('\\{' + key + '\\}', 'gi'), node[key]);
 					}
 				}
-				return $( strHtml );
+				return $(strHtml);
 			},
-			traverseParent: function ( node, callback ) {
+			traverseParent: function (node, callback) {
 				var parentNode = node.parent()
-					.parent( this.options.wrapInnerTag );
-				if ( parentNode.html() === undefined ) {
+					.parent(this.options.wrapInnerTag);
+				if (parentNode.html() === undefined) {
 					return;
 				}
-				callback.apply( parentNode );
-				this.traverseParent( parentNode, callback );
+				callback.apply(parentNode);
+				this.traverseParent(parentNode, callback);
 			},
-			traverseChildren: function ( node, callback ) {
-				var childNodes = $( node )
-					.children( this.options.wrapOutTag )
+			traverseChildren: function (node, callback) {
+				var childNodes = $(node)
+					.children(this.options.wrapOutTag)
 					.children(),
 					i;
-				if ( childNodes.html() === undefined ) {
+				if (childNodes.html() === undefined) {
 					return;
 				}
-				for ( i = 0; i < childNodes.length; i++ ) {
-					callback.apply( childNodes[ i ] );
-					this.traverseChildren( childNodes[ i ], callback );
+				for (i = 0; i < childNodes.length; i++) {
+					callback.apply(childNodes[i]);
+					this.traverseChildren(childNodes[i], callback);
 				}
 			},
-			traverseBrother: function ( node, callback ) {
-				var brotherNodes = $( node )
+			traverseBrother: function (node, callback) {
+				var brotherNodes = $(node)
 					.parent()
-					.children( this.options.wrapInnerTag ),
+					.children(this.options.wrapInnerTag),
 					i;
-				for ( i = 0; i < brotherNodes.length; i++ ) {
-					if ( brotherNodes[ i ] === node ) {
+				for (i = 0; i < brotherNodes.length; i++) {
+					if (brotherNodes[i] === node) {
 						continue;
 					}
-					callback.apply( brotherNodes[ i ] );
+					callback.apply(brotherNodes[i]);
 				}
 			}
 		}
-	} );
-} ) );
+	});
+}));
